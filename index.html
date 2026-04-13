@@ -1,0 +1,940 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouSend Messenger</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --line: #dce3ef;
+      --text: #1d2736;
+      --muted: #627089;
+      --accent: #1f7aec;
+      --accent-hover: #1564c7;
+      --danger: #d64545;
+      --ok: #1f9d62;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(140deg, #eef4ff 0%, #f7fbff 45%, #f4f7fb 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .auth-card {
+      width: min(720px, 100%);
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 10px 26px rgba(26, 40, 68, 0.08);
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .auth-title {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .row {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr auto;
+    }
+
+    label {
+      font-size: 13px;
+      color: var(--muted);
+      display: grid;
+      gap: 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      outline: none;
+      font-size: 15px;
+      color: var(--text);
+      background: #fff;
+    }
+
+    input:focus {
+      border-color: #8db9ff;
+      box-shadow: 0 0 0 3px rgba(31, 122, 236, 0.12);
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 11px 14px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: 0.15s ease;
+      background: var(--accent);
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    button:hover { background: var(--accent-hover); }
+    button.secondary { background: #f0f5ff; color: #1d4f9c; }
+    button.secondary:hover { background: #e7efff; }
+    button.warn { background: #ffeef0; color: #b23a48; }
+    button.warn:hover { background: #ffe4e8; }
+    button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .status {
+      min-height: 20px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .status.ok { color: var(--ok); }
+    .status.err { color: var(--danger); }
+
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .messenger {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 10px 26px rgba(26, 40, 68, 0.08);
+      overflow: hidden;
+      display: none;
+      min-height: calc(100vh - 40px);
+      max-height: calc(100vh - 40px);
+      grid-template-columns: 290px 1fr;
+    }
+
+    .sidebar {
+      border-right: 1px solid var(--line);
+      background: #f9fbff;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .sidebar-head {
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      gap: 8px;
+    }
+
+    .add-contact-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .me {
+      font-size: 13px;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 10px;
+      width: fit-content;
+      background: #fff;
+    }
+
+    .chat-list {
+      padding: 10px;
+      overflow: auto;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .chat-item {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+      cursor: pointer;
+      display: grid;
+      gap: 4px;
+      text-align: left;
+    }
+
+    .chat-item.active {
+      border-color: #9ec1ff;
+      background: #eef5ff;
+    }
+
+    .chat-item-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .chat-item-preview {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar-footer {
+      border-top: 1px solid var(--line);
+      padding: 12px;
+    }
+
+    .main {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-width: 0;
+    }
+
+    .main-head {
+      border-bottom: 1px solid var(--line);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .main-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .messages {
+      padding: 12px;
+      overflow: auto;
+      background: #fcfdff;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .msg {
+      max-width: min(560px, 100%);
+      border-radius: 12px;
+      border: 1px solid #e3e9f4;
+      padding: 10px;
+      background: #fff;
+      display: grid;
+      gap: 4px;
+    }
+
+    .msg.mine {
+      justify-self: end;
+      border-color: #cfe0ff;
+      background: #f3f8ff;
+    }
+
+    .meta {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .text {
+      font-size: 15px;
+      line-height: 1.35;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .composer {
+      border-top: 1px solid var(--line);
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+    }
+
+    @media (max-width: 900px) {
+      body { padding: 0; }
+      .messenger {
+        min-height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        grid-template-rows: auto auto auto;
+      }
+      .chat-list {
+        grid-auto-flow: column;
+        grid-auto-columns: 230px;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+      .auth-card {
+        min-height: 100vh;
+        border-radius: 0;
+        border: 0;
+      }
+      .row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section id="authCard" class="auth-card">
+    <div class="auth-title">YouSend Messenger</div>
+
+    <div class="row">
+      <label>
+        Номер телефона (в международном формате)
+        <input id="phoneInput" type="tel" placeholder="+375291234567" />
+      </label>
+      <div style="display:flex; align-items:end;">
+        <button id="sendOtpBtn">Получить код</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <label>
+        Код
+        <input id="otpInput" type="text" placeholder="123456" maxlength="6" />
+      </label>
+      <div style="display:flex; align-items:end;">
+        <button id="verifyOtpBtn" class="secondary">Войти</button>
+      </div>
+    </div>
+
+    <div class="hint">Тестовый режим: SMS не отправляются. Код для входа: <b>123456</b>.</div>
+    <div id="status" class="status"></div>
+  </section>
+
+  <main id="messenger" class="messenger">
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <div class="brand">YouSend</div>
+        <div id="mePhone" class="me"></div>
+        <div class="add-contact-row">
+          <input id="addContactInput" type="tel" placeholder="+375291234567" />
+          <button id="addContactBtn" type="button">Добавить</button>
+        </div>
+      </div>
+
+      <div id="chatList" class="chat-list"></div>
+
+      <div class="sidebar-footer">
+        <button id="logoutBtn" class="warn" type="button" style="width:100%;">Выйти</button>
+      </div>
+    </aside>
+
+    <section class="main">
+      <div class="main-head">
+        <div id="mainTitle" class="main-title">Чат с поддержкой</div>
+      </div>
+
+      <div id="messages" class="messages"></div>
+
+      <div class="composer">
+        <input id="messageInput" type="text" maxlength="1000" placeholder="Введите сообщение" />
+        <button id="sendMsgBtn" type="button">Отправить</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://ikzakeyxadbwppvjasgc.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlremFrZXl4YWRid3Bwdmphc2djIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMTgwNTUsImV4cCI6MjA5MTU5NDA1NX0.de2-HrdNKqY9JHC9pGnmJ2QoVjuYODpiy-ebsiDTr0w";
+
+    const TEST_OTP = "123456";
+    const LOCAL_SESSION_KEY = "yousend_dev_session";
+    const LOCAL_CONTACTS_PREFIX = "yousend_contacts_";
+
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const authCard = document.getElementById("authCard");
+    const messenger = document.getElementById("messenger");
+    const phoneInput = document.getElementById("phoneInput");
+    const otpInput = document.getElementById("otpInput");
+    const sendOtpBtn = document.getElementById("sendOtpBtn");
+    const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+    const statusEl = document.getElementById("status");
+    const mePhone = document.getElementById("mePhone");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const chatListEl = document.getElementById("chatList");
+    const mainTitleEl = document.getElementById("mainTitle");
+    const addContactInput = document.getElementById("addContactInput");
+    const addContactBtn = document.getElementById("addContactBtn");
+    const messagesEl = document.getElementById("messages");
+    const messageInput = document.getElementById("messageInput");
+    const sendMsgBtn = document.getElementById("sendMsgBtn");
+
+    let currentUser = null;
+    let currentMessages = [];
+    let realtimeChannel = null;
+    let manualContacts = [];
+    let supportPreviewText = "Задайте вопрос, мы на связи";
+    let activeChat = { type: "support", phone: "" };
+    let directChatMeta = new Map();
+
+    function setStatus(text, type = "") {
+      statusEl.textContent = text || "";
+      statusEl.className = "status" + (type ? " " + type : "");
+    }
+
+    function setLoading(button, loading) {
+      button.disabled = loading;
+      button.dataset.oldText = button.dataset.oldText || button.textContent;
+      button.textContent = loading ? "Подождите..." : button.dataset.oldText;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function formatDate(value) {
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return "";
+      return d.toLocaleString("ru-RU", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function normalizePhone(phoneRaw) {
+      const digits = String(phoneRaw || "").replace(/\D/g, "");
+      return digits ? "+" + digits : "";
+    }
+
+    function contactsStorageKey() {
+      return LOCAL_CONTACTS_PREFIX + normalizePhone(currentUser?.phone || "");
+    }
+
+    function getDirectChatKey(phoneA, phoneB) {
+      const peers = [normalizePhone(phoneA), normalizePhone(phoneB)].sort();
+      return "dm:" + peers.join("__");
+    }
+
+    function isDirectChatKey(chatKey) {
+      return typeof chatKey === "string" && chatKey.startsWith("dm:");
+    }
+
+    function getDirectPhonesFromKey(chatKey) {
+      if (!isDirectChatKey(chatKey)) return [];
+      const raw = chatKey.slice(3);
+      const parts = raw.split("__");
+      return parts.length === 2 ? parts : [];
+    }
+
+    function getOtherPhoneFromDirectKey(chatKey) {
+      const me = normalizePhone(currentUser?.phone || "");
+      const peers = getDirectPhonesFromKey(chatKey);
+      if (!peers.length || !peers.includes(me)) return "";
+      return peers[0] === me ? peers[1] : peers[0];
+    }
+
+    function buildPreviewByMessage(row, otherPhone) {
+      const senderValue = row.last_sender || row.sender;
+      const textValue = row.last_message || row.text || "";
+      const myRole = getDirectMyRole(otherPhone);
+      if (senderValue === myRole) {
+        return "Вы: " + textValue;
+      }
+      return otherPhone + ": " + textValue;
+    }
+
+    function getDirectMyRole(otherPhone) {
+      const me = normalizePhone(currentUser?.phone || "");
+      const peers = [me, normalizePhone(otherPhone)].sort();
+      return peers[0] === me ? "user" : "support";
+    }
+
+    function loadManualContactsFromStorage() {
+      if (!currentUser) return;
+      const raw = localStorage.getItem(contactsStorageKey());
+      if (!raw) {
+        manualContacts = [];
+        return;
+      }
+      try {
+        const parsed = JSON.parse(raw);
+        manualContacts = Array.isArray(parsed) ? parsed.filter((p) => typeof p === "string" && p.startsWith("+")) : [];
+      } catch (_error) {
+        manualContacts = [];
+      }
+    }
+
+    function saveManualContactsToStorage() {
+      if (!currentUser) return;
+      localStorage.setItem(contactsStorageKey(), JSON.stringify(manualContacts));
+    }
+
+    function getDirectPhonesForSidebar() {
+      const serverEntries = Array.from(directChatMeta.entries())
+        .sort((a, b) => new Date(b[1].updatedAt).getTime() - new Date(a[1].updatedAt).getTime())
+        .map(([phone]) => phone);
+
+      const result = [...serverEntries];
+      for (const phone of manualContacts) {
+        if (!result.includes(phone)) {
+          result.push(phone);
+        }
+      }
+      return result;
+    }
+
+    function updateScreenBySession() {
+      if (currentUser) {
+        authCard.style.display = "none";
+        messenger.style.display = "grid";
+        mePhone.textContent = currentUser.phone;
+        renderChatList();
+      } else {
+        authCard.style.display = "grid";
+        messenger.style.display = "none";
+        messagesEl.innerHTML = "";
+        chatListEl.innerHTML = "";
+      }
+    }
+
+    function renderChatList() {
+      chatListEl.innerHTML = "";
+
+      const fragment = document.createDocumentFragment();
+
+      const supportBtn = document.createElement("button");
+      supportBtn.type = "button";
+      supportBtn.className = "chat-item" + (activeChat.type === "support" ? " active" : "");
+      supportBtn.innerHTML = `
+        <span class="chat-item-title">Поддержка</span>
+        <span class="chat-item-preview">${escapeHtml(supportPreviewText)}</span>
+      `;
+      supportBtn.addEventListener("click", () => {
+        setActiveChat("support");
+      });
+      fragment.appendChild(supportBtn);
+
+      for (const phone of getDirectPhonesForSidebar()) {
+        const meta = directChatMeta.get(phone);
+        const preview = meta?.preview || "Пока сообщений нет";
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "chat-item" + (activeChat.type === "direct" && activeChat.phone === phone ? " active" : "");
+        btn.innerHTML = `
+          <span class="chat-item-title">${escapeHtml(phone)}</span>
+          <span class="chat-item-preview">${escapeHtml(preview)}</span>
+        `;
+        btn.addEventListener("click", () => {
+          setActiveChat("direct", phone);
+        });
+        fragment.appendChild(btn);
+      }
+
+      chatListEl.appendChild(fragment);
+    }
+
+    function renderMessages(rows) {
+      currentMessages = rows;
+      messagesEl.innerHTML = "";
+
+      if (!rows.length) {
+        if (activeChat.type === "support") {
+          supportPreviewText = "Задайте вопрос, мы на связи";
+          renderChatList();
+        }
+        messagesEl.innerHTML = '<div class="hint">Пока сообщений нет. Напишите первым.</div>';
+        return;
+      }
+
+      if (activeChat.type === "support") {
+        const last = rows[rows.length - 1];
+        supportPreviewText = last.sender === "support"
+          ? "Поддержка: " + last.text
+          : "Вы: " + last.text;
+      } else {
+        const last = rows[rows.length - 1];
+        directChatMeta.set(activeChat.phone, {
+          preview: buildPreviewByMessage(last, activeChat.phone),
+          updatedAt: last.created_at || new Date().toISOString()
+        });
+      }
+
+      const fragment = document.createDocumentFragment();
+      for (const row of rows) {
+        const mine = activeChat.type === "support"
+          ? row.sender === "user"
+          : row.sender === getDirectMyRole(activeChat.phone);
+
+        let author = "Поддержка";
+        if (activeChat.type === "direct") {
+          author = mine ? "Вы" : activeChat.phone;
+        } else if (mine) {
+          author = "Вы";
+        }
+
+        const node = document.createElement("div");
+        node.className = "msg" + (mine ? " mine" : "");
+        node.innerHTML = `
+          <div class="meta">
+            <span>${escapeHtml(author)}</span>
+            <span>${formatDate(row.created_at)}</span>
+          </div>
+          <div class="text">${escapeHtml(row.text)}</div>
+        `;
+        fragment.appendChild(node);
+      }
+
+      messagesEl.appendChild(fragment);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      renderChatList();
+    }
+
+    async function loadSupportMessages() {
+      if (!currentUser) return;
+
+      const { data, error } = await client
+        .from("support_messages")
+        .select("id, phone, sender, text, created_at")
+        .eq("phone", currentUser.phone)
+        .order("created_at", { ascending: true })
+        .limit(500);
+
+      if (error) {
+        if (error.message && error.message.includes("schema cache")) {
+          setStatus("Не найдены таблицы чата. Выполни SQL из инструкции для support_messages/support_chats.", "err");
+        } else {
+          setStatus("Ошибка загрузки сообщений: " + error.message, "err");
+        }
+        return;
+      }
+
+      renderMessages(data || []);
+    }
+
+    async function loadDirectMessages(phone) {
+      if (!currentUser) return;
+      const chatKey = getDirectChatKey(currentUser.phone, phone);
+      const { data, error } = await client
+        .from("support_messages")
+        .select("id, phone, sender, text, created_at")
+        .eq("phone", chatKey)
+        .order("created_at", { ascending: true })
+        .limit(500);
+
+      if (error) {
+        setStatus("Ошибка загрузки сообщений: " + error.message, "err");
+        return;
+      }
+
+      renderMessages(data || []);
+    }
+
+    async function loadDirectChatsFromServer() {
+      if (!currentUser) return;
+
+      const { data, error } = await client
+        .from("support_chats")
+        .select("phone, last_message, last_sender, updated_at")
+        .like("phone", "dm:%")
+        .order("updated_at", { ascending: false })
+        .limit(1000);
+
+      if (error) {
+        setStatus("Ошибка загрузки чатов: " + error.message, "err");
+        return;
+      }
+
+      const nextMeta = new Map();
+      for (const row of data || []) {
+        const otherPhone = getOtherPhoneFromDirectKey(row.phone);
+        if (!otherPhone || nextMeta.has(otherPhone)) continue;
+        nextMeta.set(otherPhone, {
+          preview: buildPreviewByMessage(row, otherPhone),
+          updatedAt: row.updated_at || new Date().toISOString()
+        });
+      }
+
+      directChatMeta = nextMeta;
+      renderChatList();
+    }
+
+    async function loadActiveMessages() {
+      if (!currentUser) return;
+      if (activeChat.type === "support") {
+        await loadSupportMessages();
+      } else {
+        await loadDirectMessages(activeChat.phone);
+      }
+    }
+
+    function setActiveChat(type, phone = "") {
+      activeChat = { type, phone };
+      mainTitleEl.textContent = type === "support" ? "Чат с поддержкой" : "Чат: " + phone;
+      renderChatList();
+      loadActiveMessages();
+    }
+
+    async function upsertSupportChat(lastText, lastSender) {
+      if (!currentUser) return;
+      await client
+        .from("support_chats")
+        .upsert({
+          phone: currentUser.phone,
+          last_message: lastText,
+          last_sender: lastSender,
+          updated_at: new Date().toISOString()
+        }, { onConflict: "phone" });
+    }
+
+    async function upsertDirectChat(chatKey, lastText, lastSender) {
+      return client
+        .from("support_chats")
+        .upsert({
+          phone: chatKey,
+          last_message: lastText,
+          last_sender: lastSender,
+          updated_at: new Date().toISOString()
+        }, { onConflict: "phone" });
+    }
+
+    function subscribeMessages() {
+      if (!currentUser) return;
+      if (realtimeChannel) {
+        client.removeChannel(realtimeChannel);
+      }
+
+      realtimeChannel = client
+        .channel("all-user-chats")
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "support_messages" },
+          (payload) => {
+            const row = payload.new || payload.old;
+            if (!row || !row.phone) return;
+
+            if (row.phone === currentUser.phone) {
+              if (activeChat.type === "support") {
+                loadSupportMessages();
+              } else {
+                supportPreviewText = row.sender === "support" ? "Поддержка: " + row.text : "Вы: " + row.text;
+                renderChatList();
+              }
+            }
+
+            const otherPhone = getOtherPhoneFromDirectKey(row.phone);
+            if (otherPhone) {
+              loadDirectChatsFromServer();
+              if (activeChat.type === "direct" && activeChat.phone === otherPhone) {
+                loadDirectMessages(otherPhone);
+              }
+            }
+          }
+        )
+        .subscribe();
+    }
+
+    sendOtpBtn.addEventListener("click", () => {
+      const phone = normalizePhone(phoneInput.value.trim());
+      if (!phone || phone.length < 8) {
+        setStatus("Введите телефон в формате +375291234567", "err");
+        return;
+      }
+      setStatus("Тестовый код: 123456 (SMS не отправляется)", "ok");
+    });
+
+    verifyOtpBtn.addEventListener("click", async () => {
+      const phone = normalizePhone(phoneInput.value.trim());
+      const token = otpInput.value.trim();
+
+      if (!phone || !token) {
+        setStatus("Введите номер и код", "err");
+        return;
+      }
+
+      if (token !== TEST_OTP) {
+        setStatus("Неверный код. Используй 123456", "err");
+        return;
+      }
+
+      setLoading(verifyOtpBtn, true);
+      currentUser = { phone };
+      localStorage.setItem(LOCAL_SESSION_KEY, JSON.stringify(currentUser));
+      loadManualContactsFromStorage();
+      updateScreenBySession();
+      setActiveChat("support");
+      await loadDirectChatsFromServer();
+      subscribeMessages();
+      setStatus("");
+      otpInput.value = "";
+      setLoading(verifyOtpBtn, false);
+    });
+
+    addContactBtn.addEventListener("click", () => {
+      if (!currentUser) return;
+      const phone = normalizePhone(addContactInput.value.trim());
+      if (!phone || phone.length < 8) {
+        setStatus("Введите номер контакта в формате +375291234567", "err");
+        return;
+      }
+      if (phone === normalizePhone(currentUser.phone)) {
+        setStatus("Нельзя добавить свой номер", "err");
+        return;
+      }
+      if (!manualContacts.includes(phone)) {
+        manualContacts.unshift(phone);
+        saveManualContactsToStorage();
+      }
+      addContactInput.value = "";
+      setStatus("Контакт добавлен: " + phone, "ok");
+      setActiveChat("direct", phone);
+    });
+
+    addContactInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        addContactBtn.click();
+      }
+    });
+
+    sendMsgBtn.addEventListener("click", async () => {
+      const text = messageInput.value.trim();
+      if (!text || !currentUser) return;
+
+      sendMsgBtn.disabled = true;
+      messageInput.value = "";
+
+      if (activeChat.type === "support") {
+        const optimisticRow = {
+          phone: currentUser.phone,
+          sender: "user",
+          text,
+          created_at: new Date().toISOString()
+        };
+        renderMessages([...currentMessages, optimisticRow]);
+
+        await upsertSupportChat(text, "user");
+        const { error } = await client
+          .from("support_messages")
+          .insert({
+            phone: currentUser.phone,
+            sender: "user",
+            text
+          });
+
+        if (error) {
+          setStatus("Ошибка отправки: " + error.message, "err");
+          await loadSupportMessages();
+        } else {
+          setStatus("");
+        }
+      } else {
+        const chatKey = getDirectChatKey(currentUser.phone, activeChat.phone);
+        const senderRole = getDirectMyRole(activeChat.phone);
+        const optimisticRow = {
+          phone: chatKey,
+          sender: senderRole,
+          text,
+          created_at: new Date().toISOString()
+        };
+        renderMessages([...currentMessages, optimisticRow]);
+
+        const { error: chatError } = await upsertDirectChat(chatKey, text, senderRole);
+        if (chatError) {
+          setStatus("Ошибка создания чата: " + chatError.message, "err");
+          await loadDirectMessages(activeChat.phone);
+          sendMsgBtn.disabled = false;
+          messageInput.focus();
+          return;
+        }
+
+        const { error } = await client
+          .from("support_messages")
+          .insert({
+            phone: chatKey,
+            sender: senderRole,
+            text
+          });
+
+        if (error) {
+          setStatus("Ошибка отправки: " + error.message, "err");
+          await loadDirectMessages(activeChat.phone);
+        } else {
+          setStatus("");
+          await loadDirectChatsFromServer();
+        }
+      }
+
+      sendMsgBtn.disabled = false;
+      messageInput.focus();
+    });
+
+    messageInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        sendMsgBtn.click();
+      }
+    });
+
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem(LOCAL_SESSION_KEY);
+      currentUser = null;
+      manualContacts = [];
+      currentMessages = [];
+      directChatMeta = new Map();
+      activeChat = { type: "support", phone: "" };
+      supportPreviewText = "Задайте вопрос, мы на связи";
+      if (realtimeChannel) {
+        client.removeChannel(realtimeChannel);
+        realtimeChannel = null;
+      }
+      updateScreenBySession();
+      setStatus("Вы вышли", "ok");
+    });
+
+    (async function init() {
+      updateScreenBySession();
+      const raw = localStorage.getItem(LOCAL_SESSION_KEY);
+      if (!raw) return;
+
+      try {
+        const saved = JSON.parse(raw);
+        if (saved?.phone) {
+          currentUser = { phone: normalizePhone(saved.phone) };
+          loadManualContactsFromStorage();
+          updateScreenBySession();
+          setActiveChat("support");
+          await loadDirectChatsFromServer();
+          subscribeMessages();
+        }
+      } catch (_error) {
+        localStorage.removeItem(LOCAL_SESSION_KEY);
+      }
+    })();
+  </script>
+</body>
+</html>
