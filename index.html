@@ -51,6 +51,12 @@
       grid-template-columns: 1fr auto;
     }
 
+    .auth-actions {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+    }
+
     label {
       font-size: 13px;
       color: var(--muted);
@@ -220,6 +226,25 @@
       font-weight: 700;
     }
 
+    .head-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .call-btn {
+      background: #e9fff4;
+      color: #12784b;
+    }
+
+    .call-btn:hover {
+      background: #d7f8e8;
+    }
+
+    .call-btn[hidden] {
+      display: none;
+    }
+
     .messages {
       padding: 12px;
       overflow: auto;
@@ -260,12 +285,174 @@
       word-break: break-word;
     }
 
+    .attachments {
+      display: grid;
+      gap: 8px;
+    }
+
+    .attachment-image {
+      max-width: min(320px, 100%);
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      display: block;
+    }
+
+    .attachment-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      color: #1d4f9c;
+      text-decoration: none;
+      padding: 9px 11px;
+      border: 1px solid #cfe0ff;
+      border-radius: 10px;
+      background: #f3f8ff;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
     .composer {
       border-top: 1px solid var(--line);
       padding: 12px;
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 10px;
+      align-items: end;
+    }
+
+    .composer-main {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .composer-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tool-btn {
+      background: #f0f5ff;
+      color: #1d4f9c;
+      padding: 9px 12px;
+    }
+
+    .tool-btn:hover {
+      background: #e7efff;
+    }
+
+    .emoji-panel {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .emoji-panel[hidden] {
+      display: none;
+    }
+
+    .emoji-btn {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .emoji-btn:hover {
+      background: #f7faff;
+    }
+
+    .attachment-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .attachment-list:empty {
+      display: none;
+    }
+
+    .attachment-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: #fff;
+      font-size: 12px;
+      color: var(--muted);
+      max-width: 100%;
+    }
+
+    .attachment-chip-name {
+      max-width: 220px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .attachment-remove {
+      border: none;
+      background: transparent;
+      color: var(--danger);
+      cursor: pointer;
+      padding: 0;
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .send-btn {
+      min-height: 44px;
+    }
+
+    .call-panel {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      width: min(360px, calc(100vw - 24px));
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 18px 40px rgba(26, 40, 68, 0.14);
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+      z-index: 20;
+    }
+
+    .call-panel[hidden] {
+      display: none;
+    }
+
+    .call-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .call-status {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .call-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .call-actions button {
+      flex: 1 1 100px;
     }
 
     @media (max-width: 900px) {
@@ -295,6 +482,9 @@
       .row {
         grid-template-columns: 1fr;
       }
+      .auth-actions {
+        align-items: stretch;
+      }
     }
   </style>
 </head>
@@ -304,25 +494,25 @@
 
     <div class="row">
       <label>
-        Номер телефона (в международном формате)
-        <input id="phoneInput" type="tel" placeholder="+375291234567" />
+        Логин
+        <input id="loginInput" type="text" placeholder="ivan.petrov" autocomplete="username" />
       </label>
-      <div style="display:flex; align-items:end;">
-        <button id="sendOtpBtn">Получить код</button>
+      <div class="auth-actions">
+        <button id="registerBtn" type="button">Регистрация</button>
       </div>
     </div>
 
     <div class="row">
       <label>
-        Код
-        <input id="otpInput" type="text" placeholder="123456" maxlength="6" />
+        Пароль
+        <input id="passwordInput" type="password" placeholder="Введите пароль" autocomplete="current-password" />
       </label>
-      <div style="display:flex; align-items:end;">
-        <button id="verifyOtpBtn" class="secondary">Войти</button>
+      <div class="auth-actions">
+        <button id="loginBtn" class="secondary" type="button">Войти</button>
       </div>
     </div>
 
-    <div class="hint">Тестовый режим: SMS не отправляются. Код для входа: <b>123456</b>.</div>
+    <div class="hint">Логин: латиница, цифры, точки, дефисы и нижнее подчеркивание. Пароль хранится как хэш в текущей demo-схеме.</div>
     <div id="status" class="status"></div>
   </section>
 
@@ -330,9 +520,9 @@
     <aside class="sidebar">
       <div class="sidebar-head">
         <div class="brand">YouSend</div>
-        <div id="mePhone" class="me"></div>
+        <div id="meLogin" class="me"></div>
         <div class="add-contact-row">
-          <input id="addContactInput" type="tel" placeholder="+375291234567" />
+          <input id="addContactInput" type="text" placeholder="login другого пользователя" />
           <button id="addContactBtn" type="button">Добавить</button>
         </div>
       </div>
@@ -347,36 +537,70 @@
     <section class="main">
       <div class="main-head">
         <div id="mainTitle" class="main-title">Чат с поддержкой</div>
+        <div class="head-actions">
+          <button id="callBtn" class="call-btn" type="button" hidden>Позвонить</button>
+        </div>
       </div>
 
       <div id="messages" class="messages"></div>
 
       <div class="composer">
-        <input id="messageInput" type="text" maxlength="1000" placeholder="Введите сообщение" />
-        <button id="sendMsgBtn" type="button">Отправить</button>
+        <div class="composer-main">
+          <div class="composer-tools">
+            <button id="emojiToggleBtn" class="tool-btn" type="button">Смайлики</button>
+            <button id="attachBtn" class="tool-btn" type="button">Файл</button>
+          </div>
+          <div id="emojiPanel" class="emoji-panel" hidden>
+            <button class="emoji-btn" type="button" data-emoji="😀">😀</button>
+            <button class="emoji-btn" type="button" data-emoji="😂">😂</button>
+            <button class="emoji-btn" type="button" data-emoji="😍">😍</button>
+            <button class="emoji-btn" type="button" data-emoji="👍">👍</button>
+            <button class="emoji-btn" type="button" data-emoji="🔥">🔥</button>
+            <button class="emoji-btn" type="button" data-emoji="🎉">🎉</button>
+            <button class="emoji-btn" type="button" data-emoji="❤️">❤️</button>
+            <button class="emoji-btn" type="button" data-emoji="😎">😎</button>
+          </div>
+          <div id="attachmentList" class="attachment-list"></div>
+          <input id="messageInput" type="text" maxlength="1000" placeholder="Введите сообщение" />
+          <input id="fileInput" type="file" hidden multiple />
+        </div>
+        <button id="sendMsgBtn" class="send-btn" type="button">Отправить</button>
       </div>
     </section>
   </main>
+
+  <div id="callPanel" class="call-panel" hidden>
+    <div id="callTitle" class="call-title">Звонок</div>
+    <div id="callStatus" class="call-status"></div>
+    <div class="call-actions">
+      <button id="acceptCallBtn" type="button" hidden>Принять</button>
+      <button id="declineCallBtn" class="warn" type="button" hidden>Отклонить</button>
+      <button id="endCallBtn" class="warn" type="button" hidden>Завершить</button>
+    </div>
+    <audio id="remoteAudio" autoplay></audio>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = "https://ikzakeyxadbwppvjasgc.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlremFrZXl4YWRid3Bwdmphc2djIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMTgwNTUsImV4cCI6MjA5MTU5NDA1NX0.de2-HrdNKqY9JHC9pGnmJ2QoVjuYODpiy-ebsiDTr0w";
 
-    const TEST_OTP = "123456";
     const LOCAL_SESSION_KEY = "yousend_dev_session";
     const LOCAL_CONTACTS_PREFIX = "yousend_contacts_";
+    const MESSAGE_PAYLOAD_PREFIX = "__YSMSG__";
+    const CALL_SIGNAL_PREFIX = "__YSCALL__";
+    const MAX_FILE_SIZE = 2 * 1024 * 1024;
 
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const authCard = document.getElementById("authCard");
     const messenger = document.getElementById("messenger");
-    const phoneInput = document.getElementById("phoneInput");
-    const otpInput = document.getElementById("otpInput");
-    const sendOtpBtn = document.getElementById("sendOtpBtn");
-    const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+    const loginInput = document.getElementById("loginInput");
+    const passwordInput = document.getElementById("passwordInput");
+    const registerBtn = document.getElementById("registerBtn");
+    const loginBtn = document.getElementById("loginBtn");
     const statusEl = document.getElementById("status");
-    const mePhone = document.getElementById("mePhone");
+    const meLogin = document.getElementById("meLogin");
     const logoutBtn = document.getElementById("logoutBtn");
     const chatListEl = document.getElementById("chatList");
     const mainTitleEl = document.getElementById("mainTitle");
@@ -384,15 +608,34 @@
     const addContactBtn = document.getElementById("addContactBtn");
     const messagesEl = document.getElementById("messages");
     const messageInput = document.getElementById("messageInput");
+    const callBtn = document.getElementById("callBtn");
+    const emojiToggleBtn = document.getElementById("emojiToggleBtn");
+    const emojiPanel = document.getElementById("emojiPanel");
+    const attachBtn = document.getElementById("attachBtn");
+    const fileInput = document.getElementById("fileInput");
+    const attachmentListEl = document.getElementById("attachmentList");
     const sendMsgBtn = document.getElementById("sendMsgBtn");
+    const callPanel = document.getElementById("callPanel");
+    const callTitleEl = document.getElementById("callTitle");
+    const callStatusEl = document.getElementById("callStatus");
+    const acceptCallBtn = document.getElementById("acceptCallBtn");
+    const declineCallBtn = document.getElementById("declineCallBtn");
+    const endCallBtn = document.getElementById("endCallBtn");
+    const remoteAudio = document.getElementById("remoteAudio");
 
     let currentUser = null;
     let currentMessages = [];
     let realtimeChannel = null;
     let manualContacts = [];
     let supportPreviewText = "Задайте вопрос, мы на связи";
-    let activeChat = { type: "support", phone: "" };
+    let activeChat = { type: "support", login: "" };
     let directChatMeta = new Map();
+    let pendingAttachments = [];
+    let callPanelMode = "idle";
+    let currentCall = null;
+    let incomingCall = null;
+    let processedCallSignals = new Set();
+    let pendingCallCandidates = new Map();
 
     function setStatus(text, type = "") {
       statusEl.textContent = text || "";
@@ -426,17 +669,647 @@
       });
     }
 
-    function normalizePhone(phoneRaw) {
-      const digits = String(phoneRaw || "").replace(/\D/g, "");
-      return digits ? "+" + digits : "";
+    function formatBytes(bytes) {
+      if (!Number.isFinite(bytes) || bytes <= 0) return "0 Б";
+      if (bytes < 1024) return bytes + " Б";
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " КБ";
+      return (bytes / (1024 * 1024)).toFixed(1) + " МБ";
+    }
+
+    function createStructuredText(text, attachments) {
+      const cleanText = String(text || "");
+      const normalizedAttachments = Array.isArray(attachments) ? attachments : [];
+      if (!normalizedAttachments.length) {
+        return cleanText;
+      }
+      return MESSAGE_PAYLOAD_PREFIX + JSON.stringify({
+        text: cleanText,
+        attachments: normalizedAttachments
+      });
+    }
+
+    function parseStructuredText(rawText) {
+      const raw = String(rawText || "");
+      const prefixIndex = raw.indexOf(MESSAGE_PAYLOAD_PREFIX);
+      if (prefixIndex === -1) {
+        return { text: raw, attachments: [] };
+      }
+
+      try {
+        const parsed = JSON.parse(raw.slice(prefixIndex + MESSAGE_PAYLOAD_PREFIX.length).trim());
+        return {
+          text: typeof parsed.text === "string" ? parsed.text : "",
+          attachments: Array.isArray(parsed.attachments) ? parsed.attachments : []
+        };
+      } catch (_error) {
+        return { text: raw, attachments: [] };
+      }
+    }
+
+    function createCallSignal(type, payload = {}) {
+      return CALL_SIGNAL_PREFIX + JSON.stringify({ type, ...payload });
+    }
+
+    function parseCallSignal(rawText) {
+      const raw = String(rawText || "");
+      const prefixIndex = raw.indexOf(CALL_SIGNAL_PREFIX);
+      if (prefixIndex === -1) return null;
+
+      try {
+        return JSON.parse(raw.slice(prefixIndex + CALL_SIGNAL_PREFIX.length).trim());
+      } catch (_error) {
+        return null;
+      }
+    }
+
+    function isCallSignal(rawText) {
+      return String(rawText || "").includes(CALL_SIGNAL_PREFIX);
+    }
+
+    function getMessagePreview(rawText) {
+      const parsed = parseStructuredText(rawText);
+      const previewParts = [];
+      if (parsed.text.trim()) {
+        previewParts.push(parsed.text.trim());
+      }
+      if (parsed.attachments.length) {
+        if (parsed.attachments.length === 1) {
+          const item = parsed.attachments[0];
+          previewParts.push(item.kind === "image" ? "Изображение" : "Файл: " + (item.name || "вложение"));
+        } else {
+          previewParts.push("Вложений: " + parsed.attachments.length);
+        }
+      }
+      return previewParts.join(" • ") || "Пустое сообщение";
+    }
+
+    function renderAttachmentList() {
+      attachmentListEl.innerHTML = "";
+      for (const item of pendingAttachments) {
+        const chip = document.createElement("div");
+        chip.className = "attachment-chip";
+        chip.innerHTML = `
+          <span class="attachment-chip-name">${escapeHtml(item.name)}</span>
+          <span>${escapeHtml(formatBytes(item.size))}</span>
+        `;
+
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.className = "attachment-remove";
+        removeBtn.textContent = "×";
+        removeBtn.addEventListener("click", () => {
+          pendingAttachments = pendingAttachments.filter((entry) => entry.id !== item.id);
+          renderAttachmentList();
+        });
+
+        chip.appendChild(removeBtn);
+        attachmentListEl.appendChild(chip);
+      }
+    }
+
+    function resetPendingAttachments() {
+      pendingAttachments = [];
+      fileInput.value = "";
+      renderAttachmentList();
+    }
+
+    function restorePendingAttachments(attachments) {
+      pendingAttachments = attachments.map((item) => ({
+        ...item,
+        id: crypto.randomUUID()
+      }));
+      renderAttachmentList();
+    }
+
+    function readFileAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("Не удалось прочитать файл"));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function fileToAttachment(file) {
+      if (file.size > MAX_FILE_SIZE) {
+        throw new Error("Файл " + file.name + " больше 2 МБ");
+      }
+
+      return {
+        id: crypto.randomUUID(),
+        name: file.name,
+        size: file.size,
+        mimeType: file.type || "application/octet-stream",
+        kind: file.type && file.type.startsWith("image/") ? "image" : "file",
+        dataUrl: await readFileAsDataUrl(file)
+      };
+    }
+
+    function appendEmojiToInput(emoji) {
+      const start = messageInput.selectionStart ?? messageInput.value.length;
+      const end = messageInput.selectionEnd ?? messageInput.value.length;
+      const value = messageInput.value;
+      messageInput.value = value.slice(0, start) + emoji + value.slice(end);
+      const nextPos = start + emoji.length;
+      messageInput.focus();
+      messageInput.setSelectionRange(nextPos, nextPos);
+    }
+
+    function appendMessageContent(node, rowText) {
+      const parsed = parseStructuredText(rowText);
+
+      if (parsed.text) {
+        const textNode = document.createElement("div");
+        textNode.className = "text";
+        textNode.textContent = parsed.text;
+        node.appendChild(textNode);
+      }
+
+      if (!parsed.attachments.length) {
+        return;
+      }
+
+      const attachmentsNode = document.createElement("div");
+      attachmentsNode.className = "attachments";
+
+      for (const item of parsed.attachments) {
+        if (item.kind === "image" && item.dataUrl) {
+          const image = document.createElement("img");
+          image.className = "attachment-image";
+          image.src = item.dataUrl;
+          image.alt = item.name || "Изображение";
+          attachmentsNode.appendChild(image);
+        }
+
+        if (item.dataUrl) {
+          const link = document.createElement("a");
+          link.className = "attachment-link";
+          link.href = item.dataUrl;
+          link.download = item.name || "file";
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = (item.kind === "image" ? "Открыть: " : "Скачать: ") + (item.name || "файл");
+          attachmentsNode.appendChild(link);
+        }
+      }
+
+      node.appendChild(attachmentsNode);
+    }
+
+    function getDisplayRows(rows) {
+      return (rows || []).filter((row) => !isCallSignal(row.text));
+    }
+
+    function getCallSignalId(row) {
+      if (row?.id) {
+        return "call:" + row.id;
+      }
+      return "call:" + String(row?.phone || "") + ":" + String(row?.created_at || "") + ":" + String(row?.text || "");
+    }
+
+    function processCallSignals(rows) {
+      for (const row of rows || []) {
+        if (!isCallSignal(row.text)) continue;
+        const signalId = getCallSignalId(row);
+        if (processedCallSignals.has(signalId)) continue;
+        processedCallSignals.add(signalId);
+
+        const otherLogin = getOtherLoginFromDirectKey(row.phone);
+        if (!otherLogin) continue;
+
+        handleCallSignal(row, otherLogin).catch((error) => {
+          setStatus("Ошибка звонка: " + (error.message || error), "err");
+        });
+      }
+    }
+
+    function updateCallButton() {
+      callBtn.hidden = activeChat.type !== "direct";
+    }
+
+    function updateCallPanel() {
+      const callContext = currentCall || incomingCall;
+      callPanel.hidden = !callContext;
+
+      if (!callContext) {
+        callTitleEl.textContent = "Звонок";
+        callStatusEl.textContent = "";
+        acceptCallBtn.hidden = true;
+        declineCallBtn.hidden = true;
+        endCallBtn.hidden = true;
+        remoteAudio.srcObject = null;
+        return;
+      }
+
+      callTitleEl.textContent = "Звонок с @" + callContext.targetLogin;
+      callStatusEl.textContent = callContext.statusText || "";
+      acceptCallBtn.hidden = callPanelMode !== "incoming";
+      declineCallBtn.hidden = !(callPanelMode === "incoming");
+      endCallBtn.hidden = !(callPanelMode === "outgoing" || callPanelMode === "active");
+      remoteAudio.srcObject = currentCall?.remoteStream || null;
+    }
+
+    function queueCallCandidate(callId, candidate) {
+      if (!callId || !candidate) return;
+      const queued = pendingCallCandidates.get(callId) || [];
+      queued.push(candidate);
+      pendingCallCandidates.set(callId, queued);
+    }
+
+    async function flushQueuedCandidates(call) {
+      if (!call?.peer || !call.callId || !call.peer.remoteDescription) {
+        return;
+      }
+
+      const queued = pendingCallCandidates.get(call.callId) || [];
+      if (!queued.length) {
+        return;
+      }
+
+      pendingCallCandidates.delete(call.callId);
+      for (const candidate of queued) {
+        try {
+          await call.peer.addIceCandidate(new RTCIceCandidate(candidate));
+        } catch (_error) {
+        }
+      }
+    }
+
+    async function applyRemoteDescription(call, sdp) {
+      if (!call?.peer || !sdp) return;
+      await call.peer.setRemoteDescription(new RTCSessionDescription(sdp));
+      await flushQueuedCandidates(call);
+    }
+
+    function cleanupCallState(sendEnd = false) {
+      const active = currentCall;
+      const signal = active ? active : incomingCall;
+
+      if (sendEnd && active && active.callId) {
+        sendCallSignal(active.targetLogin, "call-end", { callId: active.callId });
+      }
+
+      if (active?.peer) {
+        active.peer.onicecandidate = null;
+        active.peer.ontrack = null;
+        active.peer.onconnectionstatechange = null;
+        active.peer.oniceconnectionstatechange = null;
+        active.peer.close();
+      }
+      if (active?.localStream) {
+        active.localStream.getTracks().forEach((track) => track.stop());
+      }
+      if (active?.remoteStream) {
+        active.remoteStream.getTracks().forEach((track) => track.stop());
+      }
+
+      currentCall = null;
+      incomingCall = null;
+      callPanelMode = "idle";
+      if (signal?.callId) {
+        pendingCallCandidates.delete(signal.callId);
+      }
+      remoteAudio.pause();
+      remoteAudio.srcObject = null;
+      if (signal) {
+        setStatus("Звонок завершен", "ok");
+      }
+      updateCallPanel();
+    }
+
+    async function createPeerConnection(targetLogin, callId, isCaller) {
+      const localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const remoteStream = new MediaStream();
+      const peer = new RTCPeerConnection({
+        iceServers: [
+          { urls: "stun:stun.l.google.com:19302" }
+        ]
+      });
+
+      localStream.getTracks().forEach((track) => {
+        peer.addTrack(track, localStream);
+      });
+
+      peer.ontrack = (event) => {
+        event.streams[0].getTracks().forEach((track) => {
+          const exists = remoteStream.getTracks().some((item) => item.id === track.id);
+          if (!exists) {
+            remoteStream.addTrack(track);
+          }
+        });
+        updateCallPanel();
+        remoteAudio.play().catch(() => {});
+      };
+
+      peer.onicecandidate = (event) => {
+        if (event.candidate) {
+          sendCallSignal(targetLogin, "call-candidate", {
+            callId,
+            candidate: event.candidate
+          });
+        }
+      };
+
+      peer.onconnectionstatechange = () => {
+        if (!currentCall || currentCall.callId !== callId) return;
+
+        if (peer.connectionState === "connected") {
+          currentCall.statusText = "Соединение установлено";
+          callPanelMode = "active";
+          updateCallPanel();
+          remoteAudio.play().catch(() => {});
+          return;
+        }
+
+        if (peer.connectionState === "connecting") {
+          currentCall.statusText = "Соединение...";
+          callPanelMode = "outgoing";
+          updateCallPanel();
+          return;
+        }
+
+        if (peer.connectionState === "failed") {
+          setStatus("Не удалось установить соединение для звонка", "err");
+          cleanupCallState(false);
+        }
+      };
+
+      peer.oniceconnectionstatechange = () => {
+        if (!currentCall || currentCall.callId !== callId) return;
+
+        if (peer.iceConnectionState === "connected" || peer.iceConnectionState === "completed") {
+          currentCall.statusText = "Соединение установлено";
+          callPanelMode = "active";
+          updateCallPanel();
+          remoteAudio.play().catch(() => {});
+          return;
+        }
+
+        if (peer.iceConnectionState === "checking") {
+          currentCall.statusText = "Соединение...";
+          callPanelMode = "outgoing";
+          updateCallPanel();
+          return;
+        }
+
+        if (peer.iceConnectionState === "failed") {
+          setStatus("Не удалось подключить звонок", "err");
+          cleanupCallState(false);
+        }
+      };
+
+      currentCall = {
+        targetLogin,
+        callId,
+        isCaller,
+        localStream,
+        remoteStream,
+        peer,
+        statusText: isCaller ? "Соединяемся..." : "Подключаемся..."
+      };
+      callPanelMode = "outgoing";
+      updateCallPanel();
+      return currentCall;
+    }
+
+    async function ensureCurrentCall(targetLogin, callId, isCaller) {
+      if (currentCall && currentCall.callId === callId) {
+        return currentCall;
+      }
+      cleanupCallState(false);
+      return createPeerConnection(targetLogin, callId, isCaller);
+    }
+
+    async function sendCallSignal(targetLogin, type, payload = {}) {
+      if (!currentUser) return;
+      const chatKey = getDirectChatKey(currentUser.login, targetLogin);
+      const senderRole = getDirectMyRole(targetLogin);
+      const body = createCallSignal(type, {
+        from: currentUser.login,
+        ...payload
+      });
+      await upsertDirectChat(chatKey, type === "call-end" ? "Звонок завершен" : "Звонок", senderRole);
+      return client
+        .from("support_messages")
+        .insert({
+          phone: chatKey,
+          sender: senderRole,
+          text: body
+        });
+    }
+
+    async function startDirectCall() {
+      if (!currentUser || activeChat.type !== "direct") return;
+      if (currentCall || incomingCall) {
+        setStatus("У вас уже есть активный звонок", "err");
+        return;
+      }
+
+      try {
+        const callId = crypto.randomUUID();
+        await createPeerConnection(activeChat.login, callId, true);
+        currentCall.statusText = "Ожидаем ответ...";
+        callPanelMode = "outgoing";
+        updateCallPanel();
+        await sendCallSignal(activeChat.login, "call-invite", { callId });
+      } catch (error) {
+        cleanupCallState(false);
+        setStatus("Не удалось начать звонок: " + (error.message || error), "err");
+      }
+    }
+
+    async function acceptIncomingCall() {
+      if (!incomingCall) return;
+
+      try {
+        const info = incomingCall;
+        await createPeerConnection(info.targetLogin, info.callId, false);
+        currentCall.statusText = "Готовим соединение...";
+        callPanelMode = "outgoing";
+        updateCallPanel();
+        await sendCallSignal(info.targetLogin, "call-accept", { callId: info.callId });
+        incomingCall = null;
+        updateCallPanel();
+      } catch (error) {
+        cleanupCallState(false);
+        setStatus("Не удалось принять звонок: " + (error.message || error), "err");
+      }
+    }
+
+    async function declineIncomingCall() {
+      if (!incomingCall) return;
+      await sendCallSignal(incomingCall.targetLogin, "call-decline", { callId: incomingCall.callId });
+      incomingCall = null;
+      callPanelMode = "idle";
+      updateCallPanel();
+    }
+
+    async function handleCallSignal(row, otherLogin) {
+      const signal = parseCallSignal(row.text);
+      if (!signal || !otherLogin) return false;
+
+      const myRole = getDirectMyRole(otherLogin);
+      const isOwnSignal = row.sender === myRole;
+      if (isOwnSignal) return true;
+
+      if (signal.type === "call-invite") {
+        if (currentCall || incomingCall) {
+          await sendCallSignal(otherLogin, "call-decline", { callId: signal.callId });
+          return true;
+        }
+
+        incomingCall = {
+          targetLogin: otherLogin,
+          callId: signal.callId,
+          statusText: "Входящий звонок"
+        };
+        callPanelMode = "incoming";
+        updateCallPanel();
+        return true;
+      }
+
+      if (!currentCall || currentCall.callId !== signal.callId) {
+        if (signal.type === "call-end" || signal.type === "call-decline") {
+          cleanupCallState(false);
+          return true;
+        }
+      }
+
+      if (signal.type === "call-decline") {
+        setStatus("Пользователь отклонил звонок", "err");
+        cleanupCallState(false);
+        return true;
+      }
+
+      if (signal.type === "call-end") {
+        cleanupCallState(false);
+        return true;
+      }
+
+      if (signal.type === "call-accept") {
+        const call = await ensureCurrentCall(otherLogin, signal.callId, true);
+        const offer = await call.peer.createOffer();
+        await call.peer.setLocalDescription(offer);
+        call.statusText = "Соединяемся...";
+        callPanelMode = "outgoing";
+        updateCallPanel();
+        await sendCallSignal(otherLogin, "call-offer", { callId: signal.callId, sdp: offer });
+        return true;
+      }
+
+      if (signal.type === "call-offer") {
+        const call = await ensureCurrentCall(otherLogin, signal.callId, false);
+        await applyRemoteDescription(call, signal.sdp);
+        const answer = await call.peer.createAnswer();
+        await call.peer.setLocalDescription(answer);
+        call.statusText = "Соединение...";
+        callPanelMode = "outgoing";
+        updateCallPanel();
+        await sendCallSignal(otherLogin, "call-answer", { callId: signal.callId, sdp: answer });
+        return true;
+      }
+
+      if (signal.type === "call-answer") {
+        if (!currentCall) return true;
+        await applyRemoteDescription(currentCall, signal.sdp);
+        currentCall.statusText = "Соединение...";
+        callPanelMode = "outgoing";
+        updateCallPanel();
+        return true;
+      }
+
+      if (signal.type === "call-candidate") {
+        if (!signal.candidate) return true;
+
+        if (!currentCall || currentCall.callId !== signal.callId) {
+          queueCallCandidate(signal.callId, signal.candidate);
+          return true;
+        }
+
+        if (!currentCall.peer.remoteDescription) {
+          queueCallCandidate(signal.callId, signal.candidate);
+          return true;
+        }
+
+        try {
+          await currentCall.peer.addIceCandidate(new RTCIceCandidate(signal.candidate));
+        } catch (_error) {
+          queueCallCandidate(signal.callId, signal.candidate);
+        }
+        return true;
+      }
+
+      return true;
+    }
+
+    function normalizeLogin(loginRaw) {
+      const value = String(loginRaw || "").trim().toLowerCase();
+      return /^[a-z0-9_.-]{3,24}$/.test(value) ? value : "";
+    }
+
+    async function hashPassword(login, password) {
+      const payload = new TextEncoder().encode(normalizeLogin(login) + ":" + String(password || ""));
+      const hashBuffer = await crypto.subtle.digest("SHA-256", payload);
+      return Array.from(new Uint8Array(hashBuffer))
+        .map((byte) => byte.toString(16).padStart(2, "0"))
+        .join("");
+    }
+
+    function getAccountKey(login) {
+      return "acct:" + normalizeLogin(login);
+    }
+
+    function getSupportChatKey(login) {
+      return "user:" + normalizeLogin(login);
+    }
+
+    async function fetchAccount(login) {
+      const normalized = normalizeLogin(login);
+      if (!normalized) return { data: null, error: null };
+      return client
+        .from("support_chats")
+        .select("phone, last_message, last_sender, updated_at")
+        .eq("phone", getAccountKey(normalized))
+        .maybeSingle();
+    }
+
+    async function checkUserExists(login) {
+      const normalized = normalizeLogin(login);
+      if (!normalized) {
+        return { exists: false, error: null };
+      }
+
+      const candidates = [
+        getAccountKey(normalized),
+        getSupportChatKey(normalized),
+        normalized
+      ];
+
+      for (const key of candidates) {
+        const { data, error } = await client
+          .from("support_chats")
+          .select("phone")
+          .eq("phone", key)
+          .maybeSingle();
+
+        if (error) {
+          return { exists: false, error };
+        }
+
+        if (data) {
+          return { exists: true, error: null };
+        }
+      }
+
+      return { exists: false, error: null };
     }
 
     function contactsStorageKey() {
-      return LOCAL_CONTACTS_PREFIX + normalizePhone(currentUser?.phone || "");
+      return LOCAL_CONTACTS_PREFIX + normalizeLogin(currentUser?.login || "");
     }
 
-    function getDirectChatKey(phoneA, phoneB) {
-      const peers = [normalizePhone(phoneA), normalizePhone(phoneB)].sort();
+    function getDirectChatKey(loginA, loginB) {
+      const peers = [normalizeLogin(loginA), normalizeLogin(loginB)].sort();
       return "dm:" + peers.join("__");
     }
 
@@ -444,33 +1317,33 @@
       return typeof chatKey === "string" && chatKey.startsWith("dm:");
     }
 
-    function getDirectPhonesFromKey(chatKey) {
+    function getDirectLoginsFromKey(chatKey) {
       if (!isDirectChatKey(chatKey)) return [];
       const raw = chatKey.slice(3);
       const parts = raw.split("__");
       return parts.length === 2 ? parts : [];
     }
 
-    function getOtherPhoneFromDirectKey(chatKey) {
-      const me = normalizePhone(currentUser?.phone || "");
-      const peers = getDirectPhonesFromKey(chatKey);
+    function getOtherLoginFromDirectKey(chatKey) {
+      const me = normalizeLogin(currentUser?.login || "");
+      const peers = getDirectLoginsFromKey(chatKey);
       if (!peers.length || !peers.includes(me)) return "";
       return peers[0] === me ? peers[1] : peers[0];
     }
 
-    function buildPreviewByMessage(row, otherPhone) {
+    function buildPreviewByMessage(row, otherLogin) {
       const senderValue = row.last_sender || row.sender;
-      const textValue = row.last_message || row.text || "";
-      const myRole = getDirectMyRole(otherPhone);
+      const textValue = row.last_message || getMessagePreview(row.text);
+      const myRole = getDirectMyRole(otherLogin);
       if (senderValue === myRole) {
         return "Вы: " + textValue;
       }
-      return otherPhone + ": " + textValue;
+      return "@" + otherLogin + ": " + textValue;
     }
 
-    function getDirectMyRole(otherPhone) {
-      const me = normalizePhone(currentUser?.phone || "");
-      const peers = [me, normalizePhone(otherPhone)].sort();
+    function getDirectMyRole(otherLogin) {
+      const me = normalizeLogin(currentUser?.login || "");
+      const peers = [me, normalizeLogin(otherLogin)].sort();
       return peers[0] === me ? "user" : "support";
     }
 
@@ -483,7 +1356,9 @@
       }
       try {
         const parsed = JSON.parse(raw);
-        manualContacts = Array.isArray(parsed) ? parsed.filter((p) => typeof p === "string" && p.startsWith("+")) : [];
+        manualContacts = Array.isArray(parsed)
+          ? parsed.filter((item) => typeof item === "string" && normalizeLogin(item))
+          : [];
       } catch (_error) {
         manualContacts = [];
       }
@@ -494,15 +1369,15 @@
       localStorage.setItem(contactsStorageKey(), JSON.stringify(manualContacts));
     }
 
-    function getDirectPhonesForSidebar() {
+    function getDirectLoginsForSidebar() {
       const serverEntries = Array.from(directChatMeta.entries())
         .sort((a, b) => new Date(b[1].updatedAt).getTime() - new Date(a[1].updatedAt).getTime())
-        .map(([phone]) => phone);
+        .map(([login]) => login);
 
       const result = [...serverEntries];
-      for (const phone of manualContacts) {
-        if (!result.includes(phone)) {
-          result.push(phone);
+      for (const login of manualContacts) {
+        if (!result.includes(login)) {
+          result.push(login);
         }
       }
       return result;
@@ -512,13 +1387,15 @@
       if (currentUser) {
         authCard.style.display = "none";
         messenger.style.display = "grid";
-        mePhone.textContent = currentUser.phone;
+        meLogin.textContent = "@" + currentUser.login;
         renderChatList();
       } else {
         authCard.style.display = "grid";
         messenger.style.display = "none";
         messagesEl.innerHTML = "";
         chatListEl.innerHTML = "";
+        updateCallButton();
+        updateCallPanel();
       }
     }
 
@@ -539,18 +1416,18 @@
       });
       fragment.appendChild(supportBtn);
 
-      for (const phone of getDirectPhonesForSidebar()) {
-        const meta = directChatMeta.get(phone);
+      for (const login of getDirectLoginsForSidebar()) {
+        const meta = directChatMeta.get(login);
         const preview = meta?.preview || "Пока сообщений нет";
         const btn = document.createElement("button");
         btn.type = "button";
-        btn.className = "chat-item" + (activeChat.type === "direct" && activeChat.phone === phone ? " active" : "");
+        btn.className = "chat-item" + (activeChat.type === "direct" && activeChat.login === login ? " active" : "");
         btn.innerHTML = `
-          <span class="chat-item-title">${escapeHtml(phone)}</span>
+          <span class="chat-item-title">@${escapeHtml(login)}</span>
           <span class="chat-item-preview">${escapeHtml(preview)}</span>
         `;
         btn.addEventListener("click", () => {
-          setActiveChat("direct", phone);
+          setActiveChat("direct", login);
         });
         fragment.appendChild(btn);
       }
@@ -560,9 +1437,11 @@
 
     function renderMessages(rows) {
       currentMessages = rows;
+      processCallSignals(rows);
+      const displayRows = getDisplayRows(rows);
       messagesEl.innerHTML = "";
 
-      if (!rows.length) {
+      if (!displayRows.length) {
         if (activeChat.type === "support") {
           supportPreviewText = "Задайте вопрос, мы на связи";
           renderChatList();
@@ -572,27 +1451,28 @@
       }
 
       if (activeChat.type === "support") {
-        const last = rows[rows.length - 1];
+        const last = displayRows[displayRows.length - 1];
+        const previewText = getMessagePreview(last.text);
         supportPreviewText = last.sender === "support"
-          ? "Поддержка: " + last.text
-          : "Вы: " + last.text;
+          ? "Поддержка: " + previewText
+          : "Вы: " + previewText;
       } else {
-        const last = rows[rows.length - 1];
-        directChatMeta.set(activeChat.phone, {
-          preview: buildPreviewByMessage(last, activeChat.phone),
+        const last = displayRows[displayRows.length - 1];
+        directChatMeta.set(activeChat.login, {
+          preview: buildPreviewByMessage(last, activeChat.login),
           updatedAt: last.created_at || new Date().toISOString()
         });
       }
 
       const fragment = document.createDocumentFragment();
-      for (const row of rows) {
+      for (const row of displayRows) {
         const mine = activeChat.type === "support"
           ? row.sender === "user"
-          : row.sender === getDirectMyRole(activeChat.phone);
+          : row.sender === getDirectMyRole(activeChat.login);
 
         let author = "Поддержка";
         if (activeChat.type === "direct") {
-          author = mine ? "Вы" : activeChat.phone;
+          author = mine ? "Вы" : "@" + activeChat.login;
         } else if (mine) {
           author = "Вы";
         }
@@ -604,8 +1484,8 @@
             <span>${escapeHtml(author)}</span>
             <span>${formatDate(row.created_at)}</span>
           </div>
-          <div class="text">${escapeHtml(row.text)}</div>
         `;
+        appendMessageContent(node, row.text);
         fragment.appendChild(node);
       }
 
@@ -620,7 +1500,7 @@
       const { data, error } = await client
         .from("support_messages")
         .select("id, phone, sender, text, created_at")
-        .eq("phone", currentUser.phone)
+        .eq("phone", getSupportChatKey(currentUser.login))
         .order("created_at", { ascending: true })
         .limit(500);
 
@@ -636,9 +1516,9 @@
       renderMessages(data || []);
     }
 
-    async function loadDirectMessages(phone) {
+    async function loadDirectMessages(login) {
       if (!currentUser) return;
-      const chatKey = getDirectChatKey(currentUser.phone, phone);
+      const chatKey = getDirectChatKey(currentUser.login, login);
       const { data, error } = await client
         .from("support_messages")
         .select("id, phone, sender, text, created_at")
@@ -671,10 +1551,10 @@
 
       const nextMeta = new Map();
       for (const row of data || []) {
-        const otherPhone = getOtherPhoneFromDirectKey(row.phone);
-        if (!otherPhone || nextMeta.has(otherPhone)) continue;
-        nextMeta.set(otherPhone, {
-          preview: buildPreviewByMessage(row, otherPhone),
+        const otherLogin = getOtherLoginFromDirectKey(row.phone);
+        if (!otherLogin || nextMeta.has(otherLogin)) continue;
+        nextMeta.set(otherLogin, {
+          preview: buildPreviewByMessage(row, otherLogin),
           updatedAt: row.updated_at || new Date().toISOString()
         });
       }
@@ -688,23 +1568,24 @@
       if (activeChat.type === "support") {
         await loadSupportMessages();
       } else {
-        await loadDirectMessages(activeChat.phone);
+        await loadDirectMessages(activeChat.login);
       }
     }
 
-    function setActiveChat(type, phone = "") {
-      activeChat = { type, phone };
-      mainTitleEl.textContent = type === "support" ? "Чат с поддержкой" : "Чат: " + phone;
+    function setActiveChat(type, login = "") {
+      activeChat = { type, login };
+      mainTitleEl.textContent = type === "support" ? "Чат с поддержкой" : "Чат: @" + login;
       renderChatList();
+      updateCallButton();
       loadActiveMessages();
     }
 
     async function upsertSupportChat(lastText, lastSender) {
       if (!currentUser) return;
-      await client
+      return client
         .from("support_chats")
         .upsert({
-          phone: currentUser.phone,
+          phone: getSupportChatKey(currentUser.login),
           last_message: lastText,
           last_sender: lastSender,
           updated_at: new Date().toISOString()
@@ -737,20 +1618,24 @@
             const row = payload.new || payload.old;
             if (!row || !row.phone) return;
 
-            if (row.phone === currentUser.phone) {
+            if (row.phone === getSupportChatKey(currentUser.login)) {
               if (activeChat.type === "support") {
                 loadSupportMessages();
               } else {
-                supportPreviewText = row.sender === "support" ? "Поддержка: " + row.text : "Вы: " + row.text;
+                const previewText = getMessagePreview(row.text);
+                supportPreviewText = row.sender === "support" ? "Поддержка: " + previewText : "Вы: " + previewText;
                 renderChatList();
               }
             }
 
-            const otherPhone = getOtherPhoneFromDirectKey(row.phone);
-            if (otherPhone) {
+            const otherLogin = getOtherLoginFromDirectKey(row.phone);
+            if (otherLogin) {
+              handleCallSignal(row, otherLogin).catch((error) => {
+                setStatus("Ошибка звонка: " + (error.message || error), "err");
+              });
               loadDirectChatsFromServer();
-              if (activeChat.type === "direct" && activeChat.phone === otherPhone) {
-                loadDirectMessages(otherPhone);
+              if (activeChat.type === "direct" && activeChat.login === otherLogin) {
+                loadDirectMessages(otherLogin);
               }
             }
           }
@@ -758,31 +1643,8 @@
         .subscribe();
     }
 
-    sendOtpBtn.addEventListener("click", () => {
-      const phone = normalizePhone(phoneInput.value.trim());
-      if (!phone || phone.length < 8) {
-        setStatus("Введите телефон в формате +375291234567", "err");
-        return;
-      }
-      setStatus("Тестовый код: 123456 (SMS не отправляется)", "ok");
-    });
-
-    verifyOtpBtn.addEventListener("click", async () => {
-      const phone = normalizePhone(phoneInput.value.trim());
-      const token = otpInput.value.trim();
-
-      if (!phone || !token) {
-        setStatus("Введите номер и код", "err");
-        return;
-      }
-
-      if (token !== TEST_OTP) {
-        setStatus("Неверный код. Используй 123456", "err");
-        return;
-      }
-
-      setLoading(verifyOtpBtn, true);
-      currentUser = { phone };
+    async function finishAuth(login) {
+      currentUser = { login };
       localStorage.setItem(LOCAL_SESSION_KEY, JSON.stringify(currentUser));
       loadManualContactsFromStorage();
       updateScreenBySession();
@@ -790,28 +1652,141 @@
       await loadDirectChatsFromServer();
       subscribeMessages();
       setStatus("");
-      otpInput.value = "";
-      setLoading(verifyOtpBtn, false);
+      passwordInput.value = "";
+    }
+
+    async function handleRegister() {
+      const login = normalizeLogin(loginInput.value);
+      const password = passwordInput.value.trim();
+
+      if (!login || !password) {
+        setStatus("Введите логин и пароль", "err");
+        return;
+      }
+
+      setLoading(registerBtn, true);
+      const { data, error } = await fetchAccount(login);
+      if (error) {
+        setStatus("Ошибка проверки логина: " + error.message, "err");
+        setLoading(registerBtn, false);
+        return;
+      }
+      if (data) {
+        setStatus("Такой логин уже занят", "err");
+        setLoading(registerBtn, false);
+        return;
+      }
+
+      const passwordHash = await hashPassword(login, password);
+      const { error: saveError } = await client
+        .from("support_chats")
+        .upsert({
+          phone: getAccountKey(login),
+          last_message: passwordHash,
+          last_sender: "user",
+          updated_at: new Date().toISOString()
+        }, { onConflict: "phone" });
+
+      if (saveError) {
+        setStatus("Ошибка регистрации: " + saveError.message, "err");
+        setLoading(registerBtn, false);
+        return;
+      }
+
+      loginInput.value = login;
+      await finishAuth(login);
+      setStatus("Аккаунт создан. Вы вошли как @" + login, "ok");
+      setLoading(registerBtn, false);
+    }
+
+    async function handleLogin() {
+      const login = normalizeLogin(loginInput.value);
+      const password = passwordInput.value.trim();
+
+      if (!login || !password) {
+        setStatus("Введите логин и пароль", "err");
+        return;
+      }
+
+      setLoading(loginBtn, true);
+      const { data, error } = await fetchAccount(login);
+      if (error) {
+        setStatus("Ошибка входа: " + error.message, "err");
+        setLoading(loginBtn, false);
+        return;
+      }
+      if (!data) {
+        setStatus("Пользователь с таким логином не найден", "err");
+        setLoading(loginBtn, false);
+        return;
+      }
+
+      const passwordHash = await hashPassword(login, password);
+      if (data.last_message !== passwordHash) {
+        setStatus("Неверный пароль", "err");
+        setLoading(loginBtn, false);
+        return;
+      }
+
+      loginInput.value = login;
+      await finishAuth(login);
+      setStatus("Вы вошли как @" + login, "ok");
+      setLoading(loginBtn, false);
+    }
+
+registerBtn.addEventListener("click", () => {
+      handleRegister();
     });
 
-    addContactBtn.addEventListener("click", () => {
+    loginBtn.addEventListener("click", () => {
+      handleLogin();
+    });
+
+    passwordInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        loginBtn.click();
+      }
+    });
+
+    addContactBtn.addEventListener("click", async () => {
       if (!currentUser) return;
-      const phone = normalizePhone(addContactInput.value.trim());
-      if (!phone || phone.length < 8) {
-        setStatus("Введите номер контакта в формате +375291234567", "err");
+      const login = normalizeLogin(addContactInput.value);
+      if (!login) {
+        setStatus("Введите логин пользователя", "err");
         return;
       }
-      if (phone === normalizePhone(currentUser.phone)) {
-        setStatus("Нельзя добавить свой номер", "err");
+      if (login === normalizeLogin(currentUser.login)) {
+        setStatus("Нельзя добавить свой логин", "err");
         return;
       }
-      if (!manualContacts.includes(phone)) {
-        manualContacts.unshift(phone);
+
+      addContactBtn.disabled = true;
+      const { exists, error } = await checkUserExists(login);
+      if (error) {
+        setStatus("Ошибка проверки логина: " + error.message + ". Чат всё равно можно добавить.", "err");
+      }
+
+      if (!manualContacts.includes(login)) {
+        manualContacts.unshift(login);
         saveManualContactsToStorage();
       }
+
       addContactInput.value = "";
-      setStatus("Контакт добавлен: " + phone, "ok");
-      setActiveChat("direct", phone);
+      setActiveChat("direct", login);
+
+      if (error) {
+        addContactBtn.disabled = false;
+        return;
+      }
+
+      setStatus(
+        exists
+          ? "Чат с @" + login + " добавлен"
+          : "Чат с @" + login + " добавлен. Если пользователь зарегистрируется, сообщения появятся у него.",
+        "ok"
+      );
+      addContactBtn.disabled = false;
     });
 
     addContactInput.addEventListener("keydown", (event) => {
@@ -821,52 +1796,127 @@
       }
     });
 
+    callBtn.addEventListener("click", () => {
+      startDirectCall();
+    });
+
+    acceptCallBtn.addEventListener("click", () => {
+      acceptIncomingCall();
+    });
+
+    declineCallBtn.addEventListener("click", () => {
+      declineIncomingCall();
+    });
+
+    endCallBtn.addEventListener("click", () => {
+      cleanupCallState(true);
+    });
+
+    emojiToggleBtn.addEventListener("click", () => {
+      emojiPanel.hidden = !emojiPanel.hidden;
+    });
+
+    emojiPanel.querySelectorAll("[data-emoji]").forEach((button) => {
+      button.addEventListener("click", () => {
+        appendEmojiToInput(button.dataset.emoji || "");
+      });
+    });
+
+    attachBtn.addEventListener("click", () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener("change", async () => {
+      const files = Array.from(fileInput.files || []);
+      if (!files.length) return;
+
+      try {
+        const nextAttachments = [];
+        for (const file of files) {
+          nextAttachments.push(await fileToAttachment(file));
+        }
+        pendingAttachments = [...pendingAttachments, ...nextAttachments];
+        renderAttachmentList();
+        setStatus("");
+      } catch (error) {
+        setStatus(error.message || "Не удалось добавить файл", "err");
+      } finally {
+        fileInput.value = "";
+      }
+    });
+
     sendMsgBtn.addEventListener("click", async () => {
       const text = messageInput.value.trim();
-      if (!text || !currentUser) return;
+      if ((!text && !pendingAttachments.length) || !currentUser) return;
 
       sendMsgBtn.disabled = true;
       messageInput.value = "";
+      emojiPanel.hidden = true;
+
+      const attachmentsToSend = pendingAttachments.map((item) => ({
+        name: item.name,
+        size: item.size,
+        mimeType: item.mimeType,
+        kind: item.kind,
+        dataUrl: item.dataUrl
+      }));
+      const messageBody = createStructuredText(text, attachmentsToSend);
+      const previewText = getMessagePreview(messageBody);
+      resetPendingAttachments();
 
       if (activeChat.type === "support") {
         const optimisticRow = {
-          phone: currentUser.phone,
+          phone: getSupportChatKey(currentUser.login),
           sender: "user",
-          text,
+          text: messageBody,
           created_at: new Date().toISOString()
         };
         renderMessages([...currentMessages, optimisticRow]);
 
-        await upsertSupportChat(text, "user");
+        const { error: chatError } = await upsertSupportChat(previewText, "user");
+        if (chatError) {
+          setStatus("Ошибка создания чата: " + chatError.message, "err");
+          messageInput.value = text;
+          restorePendingAttachments(attachmentsToSend);
+          await loadSupportMessages();
+          sendMsgBtn.disabled = false;
+          messageInput.focus();
+          return;
+        }
+
         const { error } = await client
           .from("support_messages")
           .insert({
-            phone: currentUser.phone,
+            phone: getSupportChatKey(currentUser.login),
             sender: "user",
-            text
+            text: messageBody
           });
 
         if (error) {
           setStatus("Ошибка отправки: " + error.message, "err");
+          messageInput.value = text;
+          restorePendingAttachments(attachmentsToSend);
           await loadSupportMessages();
         } else {
           setStatus("");
         }
       } else {
-        const chatKey = getDirectChatKey(currentUser.phone, activeChat.phone);
-        const senderRole = getDirectMyRole(activeChat.phone);
+        const chatKey = getDirectChatKey(currentUser.login, activeChat.login);
+        const senderRole = getDirectMyRole(activeChat.login);
         const optimisticRow = {
           phone: chatKey,
           sender: senderRole,
-          text,
+          text: messageBody,
           created_at: new Date().toISOString()
         };
         renderMessages([...currentMessages, optimisticRow]);
 
-        const { error: chatError } = await upsertDirectChat(chatKey, text, senderRole);
+        const { error: chatError } = await upsertDirectChat(chatKey, previewText, senderRole);
         if (chatError) {
           setStatus("Ошибка создания чата: " + chatError.message, "err");
-          await loadDirectMessages(activeChat.phone);
+          messageInput.value = text;
+          restorePendingAttachments(attachmentsToSend);
+          await loadDirectMessages(activeChat.login);
           sendMsgBtn.disabled = false;
           messageInput.focus();
           return;
@@ -877,12 +1927,14 @@
           .insert({
             phone: chatKey,
             sender: senderRole,
-            text
+            text: messageBody
           });
 
         if (error) {
           setStatus("Ошибка отправки: " + error.message, "err");
-          await loadDirectMessages(activeChat.phone);
+          messageInput.value = text;
+          restorePendingAttachments(attachmentsToSend);
+          await loadDirectMessages(activeChat.login);
         } else {
           setStatus("");
           await loadDirectChatsFromServer();
@@ -901,12 +1953,13 @@
     });
 
     logoutBtn.addEventListener("click", () => {
+      cleanupCallState(false);
       localStorage.removeItem(LOCAL_SESSION_KEY);
       currentUser = null;
       manualContacts = [];
       currentMessages = [];
       directChatMeta = new Map();
-      activeChat = { type: "support", phone: "" };
+      activeChat = { type: "support", login: "" };
       supportPreviewText = "Задайте вопрос, мы на связи";
       if (realtimeChannel) {
         client.removeChannel(realtimeChannel);
@@ -923,13 +1976,19 @@
 
       try {
         const saved = JSON.parse(raw);
-        if (saved?.phone) {
-          currentUser = { phone: normalizePhone(saved.phone) };
+        if (saved?.login) {
+          currentUser = { login: normalizeLogin(saved.login) };
+          if (!currentUser.login) {
+            localStorage.removeItem(LOCAL_SESSION_KEY);
+            return;
+          }
           loadManualContactsFromStorage();
           updateScreenBySession();
           setActiveChat("support");
           await loadDirectChatsFromServer();
           subscribeMessages();
+        } else {
+          localStorage.removeItem(LOCAL_SESSION_KEY);
         }
       } catch (_error) {
         localStorage.removeItem(LOCAL_SESSION_KEY);
